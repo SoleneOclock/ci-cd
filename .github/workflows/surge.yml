@@ -52,6 +52,7 @@ jobs:
           SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
 
   deploy:
+    needs: build
     # environnement d'execution : les job s'exécute dans un runner (Linux, macOS, Windows).
     runs-on: ubuntu-latest
 
