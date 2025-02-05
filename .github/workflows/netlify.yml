@@ -30,6 +30,7 @@ jobs:
     defaults:
       run:
         working-directory: frontend
+
     steps: 
       # on récupère le code
       - name: 📥 Checkout code
@@ -52,7 +53,8 @@ jobs:
       # Install de la CLI netlify en local (dans la doc ils recommandent de ne pas l'installer en global)
       # https://docs.netlify.com/cli/get-started/#installation-in-a-ci-environment
       - name: Install Netlify CLI
-        run: npm install netlify-cli --save-dev
+        #run: npm install netlify-cli --save-dev
+        run: npm install netlify-cli -g
 
       # Deploy to Netlify
       - name: 🚀 Deploy to Netlify
