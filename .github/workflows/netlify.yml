@@ -50,16 +50,13 @@ jobs:
       - name: 🏗️ Build the project
         run: npm run build
 
-      # Install de la CLI netlify en local (dans la doc ils recommandent de ne pas l'installer en global)
-      # https://docs.netlify.com/cli/get-started/#installation-in-a-ci-environment
-      - name: Install Netlify CLI
-        #run: npm install netlify-cli --save-dev
-        run: npm install netlify-cli -g
-
-      # Deploy to Netlify
       - name: 🚀 Deploy to Netlify
+        # on utilise l'action netlify qui va faire le déploiement
+        uses: nwtgck/actions-netlify@v3.0
+        # avec with on peut passer des paramètres à l'action
+        with:
+          # l'url du dossier à déployer
+          publish-dir: 'dist'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        # on fournit direct le dossier à deployer et on précise que c'est pour la prod
-        run: netlify deploy --prod --dir=dist --site ${{ secrets.NETLIFY_SITE_ID }}
-
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
