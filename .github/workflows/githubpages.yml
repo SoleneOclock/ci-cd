@@ -51,11 +51,15 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+
+    # on créé un environnement appelé "github-pages", on pourra ainsi directement sur github, dans les settings, lui configurer des secrets, des regles de protection, etc.
     environment:
       name: github-pages
-      # l'url de la page github sera disponible dans les outputs de la step de déploiement
+      # l'url de la page github sera disponible dans les outputs de la step ayant l'id deployment
       url: ${{ steps.deployment.outputs.page_url }}
+      
     steps:
       - name: Deploy to GitHub Pages
+        # avec id on donne le nom 'deployment' à notre step, il sera utilisé pour récupérer notre url dans les outputs
         id: deployment
         uses: actions/deploy-pages@v4
