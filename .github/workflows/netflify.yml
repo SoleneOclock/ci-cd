@@ -1,0 +1,60 @@
+# Nom du workflow
+name: Netlify Deployment
+
+# Evénements qui déclenchent le workflow (triggers)
+# ici sur chaque push et chaque pull request de toutes les branches
+on: [push, pull_request]
+
+# liste des jobs à faire
+jobs:
+
+  # Nom du job : ici build
+  build:
+    # environnement d'execution : les job s'exécute dans un runner (Linux, macOS, Windows).
+    runs-on: ubuntu-latest
+
+    # Liste des steps du job
+    # Une step peut exécuter une commande ou utiliser une action réutilisable
+    steps:
+      
+      # action qui clone le dépôt
+      - name: Checkout code 
+        uses: actions/checkout@v4 
+
+      # action qui installe Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+
+      # action qui installe les dépendances
+      - name: Install dependencies
+        run: npm clean-install 
+
+      # action qui lance les tests (bon là on en a pas)
+      - name: Launch the tests
+        run: echo "No test available..."
+
+      # action qui build le projet
+      - name: Build
+        run: npm run build
+
+      # a partir de là normalement on a un dossier dist avec le build du projet
+
+  deploy: 
+    # notre job de deploiement a besoin que le build soit fait avant
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+
+      # install de la CLI netlify
+      - name: Install Netlify CLI 
+        # commande trouvée dans la doc de Netlify
+        uses: npm install netlify-cli --save-dev
+
+      # Deploy to Netlify
+      - name: Deploy to Netlify
+        env:
+          # faut fournir un token d'authentification pour netlify, en local il m'a demandé de m'authentifier via une page web
+          # on lui file des variables d'environnement qu'il ira chercher dans les secrets de notre repo
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETFLIFY_SITE_ID }}
+        run: netlify deploy --prod --dir=dist
