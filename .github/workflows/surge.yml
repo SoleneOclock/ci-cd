@@ -29,8 +29,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+
       - name: Lint the project
-        run: npm run lint
+        run: biome ci .
 
       - name: Build the project
         run: npm run build
