@@ -56,11 +56,7 @@ jobs:
         # avec with on peut passer des paramètres à l'action
         with:
           # l'url du dossier à déployer
-          publish-dir: './dist'
-          # le token d'authentification pour Netlify
-          production-branch: master
-          # Ce jeton permet à GitHub Actions d'interagir avec l'API de GitHub.
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          publish-dir: 'dist'
         env:
           # Ce jeton permet à GitHub Actions d'interagir avec l'API de Netlify 
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
