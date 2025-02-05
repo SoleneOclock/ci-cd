@@ -60,7 +60,6 @@ jobs:
       - name: 🚀 Deploy to Netlify
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETFLIFY_SITE_ID }}
         # on fournit direct le dossier à deployer et on précise que c'est pour la prod
-        run: netlify deploy --prod --dir=dist
+        run: netlify deploy --prod --dir=dist --site ${{ secrets.NETLIFY_SITE_ID }}
 
