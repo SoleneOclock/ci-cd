@@ -9,15 +9,14 @@ on:
 
 jobs: 
 
-  build:
-    # environnement d'execution : les job s'exécute dans un runner (Linux, macOS, Windows).
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     # Faut bien préciser le working-directory pour que les actions se fassent dans le bon dossier
     defaults:
       run:
         working-directory: frontend
-
+        
     # nos etapes
     steps: 
       - name: Checkout code
@@ -41,23 +40,6 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Install Surge CLI
-        run: npm install --global surge
-
-      - name: Deploy
-        # ici le domain est en dur, on pourrait aussi mettre le domaine dans un secret du repo
-        run: surge --project ./dist --domain sosotest.surge.sh
-        env:
-          # on a créé le token avec la commande `surge token` et on l'a ajouté dans les secrets du repo
-          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
-
-  deploy:
-    needs: build
-    # environnement d'execution : les job s'exécute dans un runner (Linux, macOS, Windows).
-    runs-on: ubuntu-latest
-
-    # nos etapes
-    steps: 
       - name: Install Surge CLI
         run: npm install --global surge
 

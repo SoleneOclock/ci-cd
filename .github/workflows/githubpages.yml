@@ -1,11 +1,14 @@
 name: Deploy on githubpages
 
+# Evénements qui déclenchent le workflow : triggers
+# Ici le workflow se déclanche sur chaque push de la branche main ou sur un déclenchement manuel
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+# On défini des permissions pour autoriser le déploiement sur GitHub Pages
 # copié collé de la doc, obligatoire pour que ça marche
 permissions:
   contents: read
@@ -23,6 +26,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    # on pense à préciser le working-directory pour que les actions se fassent dans dossier frontend
     defaults:
       run:
         working-directory: frontend
@@ -30,25 +34,31 @@ jobs:
       # on récupère le code
       - name: Checkout code
         uses: actions/checkout@v4
+
       # on installe Node.js
       - name: Install Node.js
         uses: actions/setup-node@v4
+
       # on installe les dépendances
       - name: Install dependencies
         run: npm install
+
       # on build notre code
       - name: Build the project
         run: npm run build
+
       # si on a des tests on les lancent
       - name: Run tests
         run: npm test
-      # Création d'un artifact avec notre bundle (pour l'utiliser dans le job de déploiement)
+
+      # Création d'un artifact contenant notre bundle (pour l'utiliser dans le job deploy)
       - name: Updload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: frontend/dist
 
   deploy:
+    # on fait pas le deploy tant qu'on a pas fait le build
     needs: build
     runs-on: ubuntu-latest
 
@@ -57,7 +67,7 @@ jobs:
       name: github-pages
       # l'url de la page github sera disponible dans les outputs de la step ayant l'id deployment
       url: ${{ steps.deployment.outputs.page_url }}
-      
+
     steps:
       - name: Deploy to GitHub Pages
         # avec id on donne le nom 'deployment' à notre step, il sera utilisé pour récupérer notre url dans les outputs
