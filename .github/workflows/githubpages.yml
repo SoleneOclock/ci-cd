@@ -27,16 +27,21 @@ jobs:
       run:
         working-directory: frontend
     steps: 
+      # on récupère le code
       - name: Checkout code
         uses: actions/checkout@v4
+      # on installe Node.js
       - name: Install Node.js
         uses: actions/setup-node@v4
+      # on installe les dépendances
       - name: Install dependencies
         run: npm install
-      - name: Run tests
-        run: npm test
+      # on build notre code
       - name: Build the project
         run: npm run build
+      # si on a des tests on les lancent
+      - name: Run tests
+        run: npm test
       # Création d'un artifact avec notre bundle (pour l'utiliser dans le job de déploiement)
       - name: Updload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
