@@ -11,6 +11,13 @@ jobs:
   build:
     # environnement d'execution : les job s'exécute dans un runner (Linux, macOS, Windows).
     runs-on: ubuntu-latest
+
+    # Faut bien préciser le working-directory pour que les actions se fassent dans le bon dossier
+    defaults:
+      run:
+        working-directory: frontend
+
+    # nos etapes
     steps: 
       - name: Checkout code
         uses: actions/checkout@v4
