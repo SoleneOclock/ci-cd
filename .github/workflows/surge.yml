@@ -51,7 +51,7 @@ jobs:
           # on a créé le token avec la commande `surge token` et on l'a ajouté dans les secrets du repo
           SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
 
- deploy:
+  deploy:
     # environnement d'execution : les job s'exécute dans un runner (Linux, macOS, Windows).
     runs-on: ubuntu-latest
 
