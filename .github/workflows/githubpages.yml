@@ -1,0 +1,56 @@
+name: Deploy on githubpages
+
+on:
+  push:
+    branches:
+      - main
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+# copié collé de la doc, obligatoire pour que ça marche
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# on authorise un seul groupe de jobs à la fois
+concurrency:
+  # Le nom du groupe de jobs
+  group: "pages"
+  # on ne veut pas que les jobs soient annulés si un autre est en cours
+  cancel-in-progress: false
+
+jobs: 
+
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps: 
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+      - name: Install dependencies
+        run: npm install
+      - name: Run tests
+        run: npm test
+      - name: Build the project
+        run: npm run build
+      # Création d'un artifact avec notre bundle (pour l'utiliser dans le job de déploiement)
+      - name: Updload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      # l'url de la page github sera disponible dans les outputs de la step de déploiement
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
