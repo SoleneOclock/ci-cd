@@ -56,7 +56,8 @@ jobs:
         # avec with on peut passer des paramètres à l'action
         with:
           # l'url du dossier à déployer
-          publish-dir: 'dist'
+          publish-dir: './dist'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
