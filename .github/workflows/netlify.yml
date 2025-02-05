@@ -1,0 +1,69 @@
+name: Deploy on Netlify
+
+# Evénements qui déclenchent le workflow : triggers
+# Ici le workflow se déclanche sur chaque push de la branche main ou sur un déclenchement manuel
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# On défini des permissions pour autoriser le déploiement sur GitHub Pages
+# copié collé de la doc, obligatoire pour que ça marche
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# on authorise un seul groupe de jobs à la fois
+concurrency:
+  # Le nom du groupe de jobs
+  group: "pages"
+  # on ne veut pas que les jobs soient annulés si un autre est en cours
+  cancel-in-progress: false
+
+jobs: 
+
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    # on pense à préciser le working-directory pour que les actions se fassent dans dossier frontend
+    defaults:
+      run:
+        working-directory: frontend
+    steps: 
+      # on récupère le code
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      # on installe Node.js
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+
+      # on installe les dépendances
+      - name: 📦 Install dependencies
+        run: npm install
+
+      # Autres jobs (tests, biome…)
+
+      # on build notre code
+      - name: 🏗️ Build the project
+        run: npm run build
+
+      # Déploiement sur Netlify
+      - name: 🚀 Déploiement sur Netlify
+        # on utilise l'action netlify qui va faire le déploiement
+        uses: nwtgck/actions-netlify@v3.0
+        # avec with on peut passer des paramètres à l'action
+        with:
+          # l'url du dossier à déployer
+          publish-dir: './dist'
+          # le token d'authentification pour Netlify
+          production-branch: master
+          # Ce jeton permet à GitHub Actions d'interagir avec l'API de GitHub.
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          # Ce jeton permet à GitHub Actions d'interagir avec l'API de Netlify 
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          # L'ID de notre site Netlify stocké comme secret ici mais c'est pas obligatoire
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+

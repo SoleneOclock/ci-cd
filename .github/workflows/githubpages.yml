@@ -66,6 +66,8 @@ jobs:
     environment:
       name: github-pages
       # l'url de la page github sera disponible dans les outputs de la step ayant l'id deployment
+      # elle sera normalement de type : https://<username>.github.io/<repo>/
+      # attention faudra ajouter la base URL dans la config de Vite sinon le nom du repo ne sera prit en compte
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
